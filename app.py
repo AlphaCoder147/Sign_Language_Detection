@@ -17,7 +17,7 @@ from model import KeyPointClassifier
 from model import PointHistoryClassifier
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"D:\fuck\assets\frame0")
+ASSETS_PATH = OUTPUT_PATH / Path(r"assets\frame0")
 
 
 def relative_to_assets(path: str) -> Path:
@@ -350,37 +350,40 @@ def main():
         debug_image = draw_info(debug_image, fps, mode, number)   
         
         lbl = Label(window, width = 200, height = 200) 
+        # video
         def get_frame():
-            ret,frame = cap.read()
-            if ret :
-                return(ret,cv.cvtColor(frame,cv.COLOR_BGR2RGB))
-            else :
-                return(ret,None)
+            ret, frame = cap.read()
+            if ret:
+                # resize frame to 300x200 pixels
+                frame = cv.resize(frame, (370, 280))
+                return ret, cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+            else:
+                return ret, None
         def update():
             ret,frame = get_frame()
             if ret :
+                # frame = cv.copyMakeBorder(frame, 25, 25, 25, 25, cv.BORDER_CONSTANT, None, (255, 255, 255))
                 img = Image.fromarray(frame)
                 lbl.img = img
                 photo = ImageTk.PhotoImage(image=lbl.img)
                 canvas.create_image(440, 75, image = photo, anchor = NW)
                 canvas.image=photo 
-            window.after(delay, update)       
-
-        #def show():
-            #imgx = cv.cvtColor(debug_image, cv.COLOR_BGR2RGBA)
-            #img = Image.fromarray(imgx)
-           # image_image_1 = ImageTk.PhotoImage(image = img)
-            #lbl.image_image_1 = image_image_1
-            #lbl.configure(image = image_image_1)
-           # lbl.config(image = image_image_1)
-            #lbl.place(x = 437, y = 69)
-           # lbl.after(10, show)
+            window.after(delay, update)
+        ret, frame = get_frame()
+        # if ret:
+        #     # Add border radius of 25 pixels
+        #     frame = cv.copyMakeBorder(frame, 25, 25, 25, 25, cv.BORDER_CONSTANT, None, (255, 255, 255))
+        #     img = Image.fromarray(frame)
+        #     lbl = Label(window, image=img)
+        #     lbl.img = img
+        #     lbl.pack()
+        #     lbl.place(x=440, y=75, anchor=NW)
         delay = 15
         update()   
         window.mainloop()
         cap.release()
         cv.destroyAllWindows    
-
+# Video
 def select_mode(key, mode):
     number = -1
     if 48 <= key <= 57:  # 0 ~ 9
