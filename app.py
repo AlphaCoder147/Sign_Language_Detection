@@ -349,17 +349,37 @@ def main():
             point_history.append([0, 0])
         debug_image = draw_info(debug_image, fps, mode, number)   
         
-        lbl = Label(window, width = 390, height = 309) 
-        def show():
-            imgx = cv.cvtColor(debug_image, cv.COLOR_BGR2RGBA)
-            img = Image.fromarray(imgx)
-            image_image_1 = ImageTk.PhotoImage(image = img)
-            lbl.image_image_1 = image_image_1
-            lbl.configure(image = image_image_1)
-            lbl.place(x = 437, y = 69)
-            lbl.after(10, show)
-        show()    
-        window.mainloop()    
+        lbl = Label(window, width = 200, height = 200) 
+        def get_frame():
+            ret,frame = cap.read()
+            if ret :
+                return(ret,cv.cvtColor(frame,cv.COLOR_BGR2RGB))
+            else :
+                return(ret,None)
+        def update():
+            ret,frame = get_frame()
+            if ret :
+                img = Image.fromarray(frame)
+                lbl.img = img
+                photo = ImageTk.PhotoImage(image=lbl.img)
+                canvas.create_image(440, 75, image = photo, anchor = NW)
+                canvas.image=photo 
+            window.after(delay, update)       
+
+        #def show():
+            #imgx = cv.cvtColor(debug_image, cv.COLOR_BGR2RGBA)
+            #img = Image.fromarray(imgx)
+           # image_image_1 = ImageTk.PhotoImage(image = img)
+            #lbl.image_image_1 = image_image_1
+            #lbl.configure(image = image_image_1)
+           # lbl.config(image = image_image_1)
+            #lbl.place(x = 437, y = 69)
+           # lbl.after(10, show)
+        delay = 15
+        update()   
+        window.mainloop()
+        cap.release()
+        cv.destroyAllWindows    
 
 def select_mode(key, mode):
     number = -1
