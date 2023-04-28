@@ -102,15 +102,46 @@ def main():
         image=image_image_2
     )
 
+    def start_capture():
+        global cap, is_playing
+        cap = cv.VideoCapture(cap_device)
+        is_playing = True
+
+    def stop_capture():
+        global cap
+        frame_num = cap.get(cv.CAP_PROP_POS_FRAMES)
+        cap.release()
+        cap = None
+        update_frame(frame_num)
+
+    def play_video():
+        global is_playing
+        is_playing = True
+
+    def pause_video():
+        global is_playing
+        is_playing = False
+        cap.set(cv.CAP_PROP_POS_FRAMES, cap.get(cv.CAP_PROP_POS_FRAMES) - 1)
+
+    def get_frame():
+        global is_playing
+        if is_playing:
+            ret, frame = cap.read()
+        else:
+            ret = False
+            frame = None
+        return ret, frame
+
     button_image_1 = PhotoImage(
         file=relative_to_assets("button_1.png"))
     button_1 = Button(
         image=button_image_1,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: cv.VideoCapture(cap_device),
+        command=stop_capture,
         relief="flat"
     )
+
     button_1.place(
         x=447.0,
         y=388.0,
@@ -124,9 +155,10 @@ def main():
         image=button_image_2,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: cap.release(),
+        command=start_capture,
         relief="flat"
     )
+
     button_2.place(
         x=645.8583984375,
         y=388.0,
