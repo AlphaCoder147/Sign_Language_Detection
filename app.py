@@ -247,6 +247,15 @@ def main():
         fill="#FFFFFF",
         outline="")
 
+    input_text_id = canvas.create_text(
+        466.0,
+        476.0,
+        anchor="nw",
+        text="Translation Text",
+        fill="#383838",
+        font=("RobotoRoman Medium", 25 * -1)
+    )
+
     canvas.create_text(
         60.0,
         27.0,
@@ -749,15 +758,6 @@ def draw_info_text(image, brect, handedness, hand_sign_text,
                    cv.LINE_AA)
 
     return image
-
-    input_text_id = canvas.create_text(
-        466.0,
-        476.0,
-        anchor="nw",
-        text=hand_sign_text,
-        fill="#383838",
-        font=("RobotoRoman Medium", 25 * -1)
-    )
 
 
 def draw_point_history(image, point_history):
